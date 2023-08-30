@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4 in 1 Shopping</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,700;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='/css/style.css') }}"
+    />
+  </head>
+  <body>
+    <!-- Navbar start -->
+    <nav class="navbar">
+      <a href="#home" class="navbar-logo"
+        ><span>4</span><span1>i</span1><span2>n</span2><span3>1</span3
+        ><span4>Shopping</span4></a
+      >
+
+      <div class="navbar-nav">
+        <a href="https://www.shopee.co.id">Shopee</a>
+        <a href="https://www.tokopedia.com">Tokopedia</a>
+        <a href="https://www.bukalapak.com">Bukalapak</a>
+        <a href="https://www.lazada.co.id">Lazada</a>
+      </div>
+
+      <div class="navbar-extra">
+        <a href="#footer" id="phone"><i data-feather="phone"></i></a>
+        <!-- <a href="#" id="phone"><i data-feather="phone"></i></a> -->
+        <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
+      </div>
+    </nav>
+    <!-- Navbar end -->
+
+    <!-- Hero Section start -->
+    <section class="hero" id="home">
+      <main class="content">
+        <h1>Mari Berbelanja <span>Dimanapun Kapanpun</span></h1>
+        <div class="search-bar">
+          <input type="search" id="search-bar" placeholder="Cari produk..." />
+          <button class="search-button">Cari</button>
+        </div>
+      </main>
+    </section>
+
+    <!-- Hero Section end -->
+
+    <!-- Footer start -->
+    <footer id="footer">
+      <div class="socials">
+        <a href="wa.me/085282839267"
+          ><i data-feather="phone"></i> +62 852 8283 9267</a
+        >
+        <a href="https://www.instagram.com/akbar.maullanaa"
+          ><i data-feather="instagram"></i> @akbar.maullanaa</a
+        >
+        <a href="#"><i data-feather="mail"></i> yusufakbarmaulana@gmail.com</a>
+      </div>
+
+      <div class="links">
+        <a href="https://www.shopee.co.id">Shopee</a>
+        <a href="https://www.tokopedia.com">Tokopedia</a>
+        <a href="https://www.bukalapak.com">Bukalapak</a>
+        <a href="https://www.lazada.co.id">Lazada</a>
+      </div>
+
+      <div class="credit">
+        <p>Created by <a href="">Akbar Maulana Yusuf</a>. | &copy; 2023.</p>
+      </div>
+    </footer>
+    <!-- Footer end -->
+
+    <!-- Feather Icons -->
+    <script>
+      feather.replace();
+    </script>
+
+    <!-- My Javascript -->
+    <script src="{{ url_for('static',filename='/js/script.js') }}"></script>
+  </body>
+</html>

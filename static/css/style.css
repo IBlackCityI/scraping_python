@@ -1,0 +1,279 @@
+:root {
+  --primary: #800000;
+  --shopee: #ff5722;
+  --tokopedia: #00b140;
+  --bukalapak: #e31e52;
+  --lazada: #0f146d;
+  --bg: #010101;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: var(--bg);
+  color: #fff;
+  /* min-height: 2000px; */
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.4rem 7%;
+  background-color: rgba(1, 1, 1, 0.8);
+  border-bottom: 1px solid #5a0000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+}
+
+.navbar .navbar-logo {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  font-style: italic;
+  /* pointer-events: none; */
+}
+
+.navbar .navbar-logo span {
+  color: var(--shopee);
+}
+
+.navbar .navbar-logo span1 {
+  color: var(--tokopedia);
+}
+
+.navbar .navbar-logo span2 {
+  color: var(--bukalapak);
+}
+
+.navbar .navbar-logo span3 {
+  color: var(--lazada);
+}
+
+.navbar .navbar-logo span4 {
+  color: #fff;
+}
+
+.navbar .navbar-nav a {
+  color: #fff;
+  display: inline-block;
+  font-size: 1.3rem;
+  margin: 0 1rem;
+}
+
+.navbar .navbar-nav a:hover {
+  color: var(--primary);
+}
+
+.navbar .navbar-nav a::after {
+  content: "";
+  display: block;
+  padding-bottom: 0.5rem;
+  border-bottom: 0.1rem solid var(--primary);
+  transform: scaleX(0);
+  transition: 0.2s linear;
+}
+
+.navbar .navbar-nav a:hover::after {
+  transform: scaleX(0.5);
+}
+
+.navbar .navbar-extra a {
+  color: #fff;
+  margin: 0 0.5rem;
+}
+
+.navbar .navbar-extra a:hover {
+  color: var(--primary);
+}
+
+#hamburger-menu {
+  display: none;
+}
+
+/* Hero Section */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background-image: url("../img/header-bg.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.hero::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 60%;
+  bottom: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(1, 1, 3, 1) 8%,
+    rgba(255, 255, 255, 0) 50%
+  );
+}
+
+.hero .content {
+  padding: 1.4rem 7%;
+  max-width: 100rem;
+  margin: 0 auto; /* Mengatur margin otomatis secara horizontal */
+  text-align: center; /* Mengatur teks ke tengah */
+}
+
+.hero .content h1 {
+  font-size: 3.5em;
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(1, 1, 3, 0.5);
+  line-height: 1.2;
+  margin-top: -200px;
+  user-select: none;
+}
+
+.hero .content h1 span {
+  color: var(--primary);
+}
+
+.hero .content .search-bar {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem; /* Mengatur jarak antara search bar dan teks */
+}
+
+.hero .content .search-bar input[type="search"] {
+  flex: 1;
+  padding: 1rem; /* Menambahkan ruang di sekitar teks dalam input */
+  font-size: 1.6rem;
+  border: 2px solid var(--primary); /* Memberi batas pada input */
+  border-radius: 5px; /* Memberi sudut membulat pada input */
+}
+
+/* Membuat tombol pencarian lebih panjang */
+.hero .content .search-bar button.search-button {
+  padding: 1rem 3rem; /* Menambahkan lebar dan tinggi tombol */
+  font-size: 1.4rem;
+  color: #fff;
+  background-color: var(--primary);
+  border: none;
+  border-radius: 5px;
+  margin-left: 1rem; /* Mengatur jarak antara input dan tombol */
+  cursor: pointer;
+}
+
+/* Footer */
+footer {
+  background-color: #800000;
+  text-align: center;
+  padding: 1rem 0 3rem;
+  margin-top: 3rem;
+}
+
+footer .socials {
+  padding: 1rem 0;
+}
+
+footer .socials a {
+  color: #fff;
+  display: flex;
+  align-items: center; /* Mengatur teks secara vertikal */
+  justify-content: center; /* Mengatur teks secara horizontal */
+  margin: 1rem;
+}
+
+footer .socials a:hover,
+footer .links a:hover {
+  color: var(--bg);
+}
+
+footer .links {
+  margin-bottom: 1.4rem;
+}
+
+footer .links a {
+  color: #fff;
+  padding: 0.7rem 1rem;
+}
+
+footer .credit {
+  font-size: 0.8rem;
+}
+
+footer .credit a {
+  color: var(--bg);
+  font-weight: 700;
+}
+
+/* Media Queries */
+/* Laptop */
+@media (max-width: 1366px) {
+  html {
+    font-size: 75%;
+  }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  html {
+    font-size: 62.5%;
+  }
+
+  #hamburger-menu {
+    display: inline-block;
+  }
+
+  .navbar .navbar-nav {
+    position: absolute;
+    top: 100%;
+    right: -100%;
+    background-color: #fff;
+    width: 30rem;
+    height: 100vh;
+    transition: 0.3s;
+  }
+
+  .navbar .navbar-nav.active {
+    right: 0;
+  }
+
+  .navbar .navbar-nav a {
+    color: var(--bg);
+    display: block;
+    margin: 1.5rem;
+    padding: 0.5rem;
+    font-size: 2rem;
+  }
+
+  .navbar .navbar-nav a::after {
+    transform-origin: 0 0;
+  }
+
+  .navbar .navbar-nav a:hover::after {
+    transform: scaleX(0.2);
+  }
+}
+
+/* Mobile Phone */
+@media (max-width: 450px) {
+  html {
+    font-size: 55%;
+  }
+}
