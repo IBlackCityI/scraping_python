@@ -25,7 +25,7 @@ from utils import get_engine, run_query
 from flask import Flask, request, render_template
 
 # from image import image_bp
-from home import home_bp
+from search import search_bp
 # from auth import signup_bp, signin_bp
 # from product_list import product_bp, category_bp
 # from product_detail import details_bp, cart_bp
@@ -43,7 +43,7 @@ def create_app():
 
     CORS(app)
 
-    @app.route('/')
+    @app.route('/home')
     def index():
         return render_template('index.html')
 
@@ -210,7 +210,7 @@ def create_app():
     # run_query(f"INSERT INTO product VALUES('{product4}','gambar4','Rolex Watch Ruby For Men',250000,39,'Makassar','link4') ON CONFLICT DO NOTHING", commit=True)
     # #Insert Product into Table
 
-    blueprints = [home_bp]
+    blueprints = [search_bp]
 
     for bp in blueprints:
         app.register_blueprint(bp)

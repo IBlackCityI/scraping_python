@@ -15,12 +15,12 @@ from selenium.webdriver.chrome.service import Service
 from bs4 import BeautifulSoup
 import time
 
-home_bp = Blueprint("home", __name__, url_prefix="/home")
+search_bp = Blueprint("search", __name__, url_prefix="/search")
 
 keyword1 = ""
 page1 = 1
 
-@home_bp.route("", methods=["GET"])
+@search_bp.route("", methods=["GET"])
 def get_product():
 
     global keyword1  # Declare keyword1 as a global variable
@@ -222,10 +222,15 @@ def get_product():
                         productSold = productSold.get_text()
                         if "rb" in productSold:
                             # split_sold = productSold.replace(" terjual","")
-                            sold = int(split_sold.replace(" rb+ terjual","")) * 1000
+                            sold = int(productSold.replace(" rb+ terjual","")) * 1000
+
+                        elif "rb" not in productSold and "+" in productSold:
+                            # split_sold = productSold.replace(" terjual","")
+                            sold = int(productSold.replace("+ terjual",""))
+                            
                         else:
                             # split_sold = productSold.replace(" terjual","")
-                            sold = int(split_sold.replace("+ terjual",""))
+                            sold = int(productSold.replace(" terjual",""))
                     else:
                         sold = 0
 
@@ -272,10 +277,10 @@ def get_product():
                 if productSold != None:
                     productSold = productSold.get_text()
                     if "," in productSold:
-                        split_sold = productSold.replace(" Terjual","")
+                        split_sold = productSold.replace(" sold","")
                         sold = int(split_sold.replace(",",""))
                     else:
-                        split_sold = productSold.replace(" Terjual","")
+                        split_sold = productSold.replace(" sold","")
                         sold = int(split_sold)
                 else:
                     sold = 0
