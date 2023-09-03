@@ -26,6 +26,12 @@ def get_product():
     global keyword1  # Declare keyword1 as a global variable
     global page1  # Declare page1 as a global variable
 
+    mock = request.args["mock"]
+    if mock == "true":
+        with open('response.json') as user_file:
+            file_contents = user_file.read()
+            return file_contents
+
     if "keyword" not in request.args:
         
         return {
@@ -152,6 +158,8 @@ def get_product():
                 # print(i)
 
                 productName = area.find('div',class_="ie3A+n bM+7UW Cve6sh").get_text()
+                if "'" in productName:
+                    productName = productName.replace("'","")
 
                 img_tag = data.find('img', class_='_7DTxhh vc8g9F')
                 productImage = img_tag['src']
@@ -205,6 +213,9 @@ def get_product():
                 # print(i)
                 if id >= 5 :
                     productName = area.find('div',class_="prd_link-product-name css-3um8ox").get_text()
+                    if "'" in productName:
+                        productName = productName.replace("'","")
+
                     productImage = area.find('img')['src']
 
                     productPrice = area.find('div',class_="prd_link-product-price css-1ksb19c").get_text()
@@ -260,6 +271,8 @@ def get_product():
                 for t in title:
                     if t.has_attr('title'):
                         productName = t['title']
+                        if "'" in productName:
+                            productName = productName.replace("'","")
 
                 productImage = area.find('img')['src']
 
@@ -311,6 +324,9 @@ def get_product():
                 # print(i)
 
                 productName = area.find('a',class_="bl-link").get_text()
+                if "'" in productName:
+                    productName = productName.replace("'","")
+
                 productImage = area.find('img')['src']
 
                 # div = data.find('div',{"class":"yvbeD6 KUUypF"})
