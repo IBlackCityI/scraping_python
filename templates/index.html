@@ -51,7 +51,18 @@
         <h1>Mari Berbelanja <span>Dimanapun Kapanpun</span></h1>
         <div class="search-bar">
           <input type="search" id="search-bar" placeholder="Cari produk..." />
-          <button class="search-button">Cari</button>
+          <button class="search-button" onclick="submitForm()">Cari</button>
+        </div>
+        <div>
+          <input
+            type="number"
+            id="page"
+            name="page"
+            min="1"
+            max="100"
+            step="1"
+            value="1"
+          />
         </div>
       </main>
     </section>
