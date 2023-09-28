@@ -14,20 +14,3 @@ document.addEventListener("click", function (e) {
     navbarNav.classList.remove("active");
   }
 });
-
-function submitForm() {
-  const keyword = document.getElementById("search-bar").value;
-  const page = document.getElementById("page").value;
-  const url = `/home?keyword=${keyword}&page=${page}`;
-
-  fetch(url, {
-    method: "POST",
-  })
-    .then((response) => response.text())
-    .then((result) => {
-      alert(result); // Tampilkan hasil dari server
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
