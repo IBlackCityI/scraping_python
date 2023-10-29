@@ -49,25 +49,92 @@
     <section class="hero" id="home">
       <main class="content">
         <h1>Mari Berbelanja <span>Dimanapun Kapanpun</span></h1>
+        <br>
         <div class="search-bar">
           <input type="search" id="search-bar" placeholder="Cari produk..." />
           <button class="search-button" onclick="submitForm()">Cari</button>
-        </div>
-        <div>
-          <input
-            type="number"
-            id="page"
-            name="page"
-            min="1"
-            max="100"
-            step="1"
-            value="1"
-          />
         </div>
       </main>
     </section>
 
     <!-- Hero Section end -->
+
+    <!-- Tabel Section Start -->
+
+    <section id="tabel" class="tabel">
+
+      <h2><span>Hasil</span> Pencarian<span>mu</span></h2>
+
+      <div class="table-container">
+        <table class="table" id="productTable">
+          <thead>
+            <tr>
+              <th>Gambar</th>
+              <th>Judul</th>
+              <th>Harga</th>
+              <th>Terjual</th>
+              <th>Lokasi</th>
+              <th>Link</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            {% if data %} {% for item in data %}
+            <tr>
+              <td>
+                <img
+                  src="{% if item.image == 'n' %} {{ url_for('static', filename='/images/default.png') }} {% else %} {{ item.image }} {% endif %}"
+                  alt="{{ item.image }}"
+                  width="100"
+                />
+              </td>
+              <td>{{ item.title }}</td>
+              <td>
+                <span class="price" data-raw-price="{{ item.price }}"
+                  >{{ item.price}}</span
+                >
+              </td>
+              <td>{{ item.sold }}</td>
+              <td>{{ item.location }}</td>
+              <td>
+                <a href="{{ item.link }}">
+                  <img
+                    src="{% if item.source == 'BUKALAPAK' %} {{ url_for('static', filename='/images/bukalapak.png') }} {% elif item.source == 'SHOPEE' %} {{ url_for('static', filename='/images/shopee.png') }} {% elif item.source == 'TOKOPEDIA' %} {{ url_for('static', filename='/images/tokopedia.png') }} {% elif item.source == 'LAZADA' %} {{ url_for('static', filename='/images/lazada.png') }} {% elif item.image == 'n' %} {{ url_for('static', filename='/images/default.png') }} {% else %} {{ url_for('static', filename='/images/default.png') }} {% endif %}"
+                    alt="{{ item.source }}"
+                    width="100"
+                  />
+                </a>
+              </td>
+            </tr>
+            {% endfor %} {% else %}
+            <tr>
+              <td colspan="6">Belum ada Data, silahkan lakukan pencarian</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+        <div>
+
+    </section>
+
+    <!-- Tabel Section End -->
+
+    <!-- Pagination Section Start -->
+    
+    <section id="pagination" class="pagination">
+            <input
+              type="number"
+              id="page"
+              name="page"
+              min="1"
+              max="17"
+              step="1"
+              value="1"
+            />
+            
+          <button class="search-button" onclick="submitForm()">Cari</button>
+    </section>
+    
+    <!-- Pagination Section Start -->
 
     <!-- Footer start -->
     <footer id="footer">
@@ -94,12 +161,10 @@
     </footer>
     <!-- Footer end -->
 
-    <!-- Feather Icons -->
+    <!-- My Javascript -->
+    <script src="{{ url_for('static',filename='/js/script.js') }}"></script>
     <script>
       feather.replace();
     </script>
-
-    <!-- My Javascript -->
-    <script src="{{ url_for('static',filename='/js/script.js') }}"></script>
   </body>
 </html>

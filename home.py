@@ -5,7 +5,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.exc import IntegrityError
 from utils import run_query, get_engine
-from flask import Blueprint, request, redirect
+from flask import Blueprint, request, render_template
 import uuid
 import jwt
 import json
@@ -72,10 +72,12 @@ def search_product():
         if data == []:
             message = "Belum ada Data, silahkan isikan Kata Kunci"
 
-        return {
-                "data": data, 
-                "message": message
-            }, 201
+        return render_template(
+            'index.html',
+            data = data, 
+            message = message
+        )
+
     
     if request.method == "POST":
 
@@ -87,13 +89,18 @@ def search_product():
             data = []
             
             return {
-                    "data": data, 
                     "message": "Silahkan Masukkan Kata Kunci"
                 }, 201
             
         else:
         
             keyword = request.args["keyword"]
+
+            if not keyword.strip():
+                return {
+                    "message": "Silahkan Masukkan Kata Kunci"
+                }, 201
+
             if "page" not in request.args:
                 page = 1
             else:
@@ -152,15 +159,17 @@ def search_product():
                 content = driver.page_source
                 data = BeautifulSoup(content,'html.parser')
 
-                for area in data.find_all('div',class_="col-xs-2-4 shopee-search-item-result__item"):
-                    # print(i)
+                for area in data.find_all('li',class_="col-xs-2-4 shopee-search-item-result__item"):
 
                     productName = area.find('div',class_="ie3A+n bM+7UW Cve6sh").get_text()
                     if "'" in productName:
                         productName = productName.replace("'","")
 
-                    img = data.find('img')
-                    productImage = img['src']
+                    img_tag = area.find('img', class_='_7DTxhh tWoeMk')
+                    if img_tag:
+                        productImage = img_tag.get('src')
+                    else:
+                        productImage = "n"
 
                     productPrice = area.find('span',class_="ZEgDH9").get_text()
                     if productPrice == "???":
@@ -190,173 +199,179 @@ def search_product():
 
                     productLocation = area.find('div',class_="zGGwiV").get_text()
                     
-                    run_query(f"INSERT INTO product VALUES({i},'SHOPEE','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}') ON CONFLICT DO NOTHING", commit=True)
+                    run_query(f"INSERT INTO product VALUES({i},'SHOPEE','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}')", commit=True)
                     # print(productPrice)
                     i+=1
 
-            # TOKOPEDIA
+            # # TOKOPEDIA
 
-                driver.get(url_tokped)
-                scrolling = 500
-                for scroll in range(1, 14):
-                    end = scrolling * scroll
-                    perintah = "window.scrollTo(0," + str(end) + ")"
-                    driver.execute_script(perintah)
-                    time.sleep(1)
+            #     driver.get(url_tokped)
+            #     scrolling = 500
+            #     for scroll in range(1, 14):
+            #         end = scrolling * scroll
+            #         perintah = "window.scrollTo(0," + str(end) + ")"
+            #         driver.execute_script(perintah)
+            #         time.sleep(1)
 
-                content = driver.page_source
-                data = BeautifulSoup(content,'html.parser')
+            #     content = driver.page_source
+            #     data = BeautifulSoup(content,'html.parser')
 
-                for id,area in enumerate(data.find_all('div',class_="css-llwpbs")):
-                    # print(i)
-                    if id >= 5 :
-                        productName = area.find('div',class_="prd_link-product-name css-3um8ox").get_text()
-                        if "'" in productName:
-                            productName = productName.replace("'","")
+            #     for id,area in enumerate(data.find_all('div',class_="css-llwpbs")):
+            #         # print(i)
+            #         if id >= 5 :
+            #             productName = area.find('div',class_="prd_link-product-name css-3um8ox").get_text()
+            #             if "'" in productName:
+            #                 productName = productName.replace("'","")
 
-                        productImage = area.find('img')['src']
+            #             productImage = area.find('img')['src']
 
-                        productPrice = area.find('div',class_="prd_link-product-price css-h66vau").get_text()
-                        productPrice = productPrice.replace("Rp","")
-                        split_price = productPrice.split('.')
-                        conv_price = ""
-                        for p in split_price:
-                            conv_price+=p
-                        price = int(conv_price)
+            #             productPrice = area.find('div',class_="prd_link-product-price css-h66vau").get_text()
+            #             productPrice = productPrice.replace("Rp","")
+            #             split_price = productPrice.split('.')
+            #             conv_price = ""
+            #             for p in split_price:
+            #                 conv_price+=p
+            #             price = int(conv_price)
 
-                        productLink = area.find('a')['href']
+            #             productLink = area.find('a')['href']
                         
-                        productSold = area.find('span',class_="prd_label-integrity css-1duhs3e")
-                        if productSold != None:
-                            productSold = productSold.get_text()
-                            if "rb" in productSold:
-                                # split_sold = productSold.replace(" terjual","")
-                                sold = int(productSold.replace(" rb+ terjual","")) * 1000
+            #             productSold = area.find('span',class_="prd_label-integrity css-1duhs3e")
+            #             if productSold != None:
+            #                 productSold = productSold.get_text()
+            #                 if "rb" in productSold:
+            #                     # split_sold = productSold.replace(" terjual","")
+            #                     sold = int(productSold.replace(" rb+ terjual","")) * 1000
 
-                            elif "rb" not in productSold and "+" in productSold:
-                                # split_sold = productSold.replace(" terjual","")
-                                sold = int(productSold.replace("+ terjual",""))
+            #                 elif "rb" not in productSold and "+" in productSold:
+            #                     # split_sold = productSold.replace(" terjual","")
+            #                     sold = int(productSold.replace("+ terjual",""))
                                 
-                            else:
-                                # split_sold = productSold.replace(" terjual","")
-                                sold = int(productSold.replace(" terjual",""))
-                        else:
-                            sold = 0
+            #                 else:
+            #                     # split_sold = productSold.replace(" terjual","")
+            #                     sold = int(productSold.replace(" terjual",""))
+            #             else:
+            #                 sold = 0
 
-                        productLocation = area.find('span',class_="prd_link-shop-loc css-1kdc32b flip").get_text()
+            #             productLocation = area.find('span',class_="prd_link-shop-loc css-1kdc32b flip").get_text()
                         
-                        run_query(f"INSERT INTO product VALUES({i},'TOKOPEDIA','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}') ON CONFLICT DO NOTHING", commit=True)
+            #             run_query(f"INSERT INTO product VALUES({i},'TOKOPEDIA','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}')", commit=True)
 
-                        i+=1
+            #             i+=1
 
-            #LAZADA
+            # #LAZADA
 
-                driver.get(url_lazada)
-                scrolling = 500
-                for scroll in range(1, 11):
-                    end = scrolling * scroll
-                    perintah = "window.scrollTo(0," + str(end) + ")"
-                    driver.execute_script(perintah)
-                    time.sleep(1)
+            #     driver.get(url_lazada)
+            #     scrolling = 500
+            #     for scroll in range(1, 11):
+            #         end = scrolling * scroll
+            #         perintah = "window.scrollTo(0," + str(end) + ")"
+            #         driver.execute_script(perintah)
+            #         time.sleep(1)
 
-                content = driver.page_source
-                data = BeautifulSoup(content,'html.parser')
+            #     content = driver.page_source
+            #     data = BeautifulSoup(content,'html.parser')
 
-                for area in data.find_all('div',class_="Ms6aG MefHh"):
-                    # print(i)
+            #     for area in data.find_all('div',class_="Bm3ON"):
+            #         # print(i)
 
-                    title = data.find_all('a')
-                    for t in title:
-                        if t.has_attr('title'):
-                            productName = t['title']
-                            if "'" in productName:
-                                productName = productName.replace("'","")
+            #         title = data.find_all('a')
+            #         for t in title:
+            #             if t.has_attr('title'):
+            #                 productName = t['title']
+            #                 if "'" in productName:
+            #                     productName = productName.replace("'","")
 
-                    productImage = area.find('img')['src']
+            #         productImage = area.find('img')['src']
 
-                    productPrice = area.find('span',class_="ooOxS").get_text()
-                    productPrice = productPrice.replace("Rp","")
-                    split_price = productPrice.split('.')
-                    conv_price = ""
-                    for p in split_price:
-                        conv_price+=p
-                    price = int(conv_price)
+            #         productPrice = area.find('span',class_="ooOxS").get_text()
+            #         productPrice = productPrice.replace("Rp","")
+            #         split_price = productPrice.split('.')
+            #         conv_price = ""
+            #         for p in split_price:
+            #             conv_price+=p
+            #         price = int(conv_price)
 
-                    productLink = area.find('a')['href']
+            #         productLink = area.find('a')['href']
                     
-                    productSold = area.find('span',class_="_1cEkb")
-                    if productSold != None:
-                        productSold = productSold.get_text()
-                        if "," in productSold:
-                            split_sold = productSold.replace(" sold","")
-                            sold = int(split_sold.replace(",",""))
-                        else:
-                            split_sold = productSold.replace(" sold","")
-                            sold = int(split_sold)
-                    else:
-                        sold = 0
+            #         productSold = area.find('span',class_="_1cEkb")
+            #         if productSold != None:
+            #             productSold = productSold.get_text()
+            #             if "," in productSold:
+            #                 split_sold = productSold.replace(" sold","")
+                            
+            #                 if "+" in split_sold:
+            #                     split_sold = split_sold.replace("+","")
+                
+            #                 sold = int(split_sold.replace(",",""))
+            #             else:
+            #                 split_sold = productSold.replace(" sold","")
+            #                 sold = int(split_sold)
+            #         else:
+            #             sold = 0
 
-                    title = data.find_all('span')
-                    for t in title:
-                        if t.has_attr('title'):
-                            productLocation = t['title']
+            #         productLocation = area.find('span',class_="oa6ri")
+            #         productLocation = productLocation.get_text()
                     
-                    run_query(f"INSERT INTO product VALUES({i},'LAZADA','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}') ON CONFLICT DO NOTHING", commit=True)
+            #         run_query(f"INSERT INTO product VALUES({i},'LAZADA','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}')", commit=True)
 
-                    i+=1
+            #         i+=1
 
-            #BUKALAPAK
+            # #BUKALAPAK
 
-                driver.get(url_bukalapak)
-                scrolling = 500
-                for scroll in range(1, 9):
-                    end = scrolling * scroll
-                    perintah = "window.scrollTo(0," + str(end) + ")"
-                    driver.execute_script(perintah)
-                    time.sleep(1)
+            #     driver.get(url_bukalapak)
+            #     scrolling = 500
+            #     for scroll in range(1, 9):
+            #         end = scrolling * scroll
+            #         perintah = "window.scrollTo(0," + str(end) + ")"
+            #         driver.execute_script(perintah)
+            #         time.sleep(1)
 
-                content = driver.page_source
-                data = BeautifulSoup(content,'html.parser')
+            #     content = driver.page_source
+            #     data = BeautifulSoup(content,'html.parser')
 
-                for area in data.find_all('div',class_="bl-flex-item mb-8"):
-                    # print(i)
+            #     for area in data.find_all('div',class_="bl-flex-item mb-8"):
+            #         # print(i)
 
-                    productName = area.find('a',class_="bl-link").get_text()
-                    if "'" in productName:
-                        productName = productName.replace("'","")
+            #         productName = area.find('a',class_="bl-link").get_text()
+            #         if "'" in productName:
+            #             productName = productName.replace("'","")
 
-                    productImage = area.find('img')['src']
+            #         productImage = area.find('img')['src']
 
-                    # div = data.find('div',{"class":"yvbeD6 KUUypF"})
-                    # productImage = div.find('img').attrs['src']
+            #         # div = data.find('div',{"class":"yvbeD6 KUUypF"})
+            #         # productImage = div.find('img').attrs['src']
 
-                    productPrice = area.find('p',class_="bl-text bl-text--semi-bold bl-text--ellipsis__1 bl-product-card-new__price").get_text()
-                    split_price = productPrice.split('.')
-                    conv_price = ""
-                    for p in split_price:
-                        conv_price+=p
-                    price = int(conv_price)
+            #         productPrice = area.find('p',class_="bl-text bl-text--semi-bold bl-text--ellipsis__1 bl-product-card-new__price").get_text()
+            #         split_price = productPrice.split('.')
+            #         conv_price = ""
+            #         for p in split_price:
+            #             conv_price+=p
+            #         price = int(conv_price)
 
-                    productLink = area.find('a')['href']
+            #         productLink = area.find('a')['href']
                     
-                    productSold = area.find('p',class_="bl-text bl-text--caption-12 bl-text--secondary bl-product-card-new__sold-count")
-                    if productSold != None:
-                        productSold = productSold.get_text()
-                        split_sold = productSold.replace("Terjual ","")
-                        sold = int(split_sold)
-                    else:
-                        sold = 0
+            #         productSold = area.find('p',class_="bl-text bl-text--caption-12 bl-text--secondary bl-product-card-new__sold-count")
+            #         if productSold != None:
+            #             productSold = productSold.get_text()
+            #             split_sold = productSold.replace("Terjual ","")
+            #             sold = int(split_sold)
+            #         else:
+            #             sold = 0
 
-                    productLocation = area.find('p',class_="bl-text bl-text--caption-12 bl-text--secondary bl-text--ellipsis__1 bl-product-card-new__store-location").get_text()
+            #         productLocation = area.find('p',class_="bl-text bl-text--caption-12 bl-text--secondary bl-text--ellipsis__1 bl-product-card-new__store-location").get_text()
 
-                    run_query(f"INSERT INTO product VALUES({i},'BUKALAPAK','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}') ON CONFLICT DO NOTHING", commit=True)
+            #         run_query(f"INSERT INTO product VALUES({i},'BUKALAPAK','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}')", commit=True)
 
-                    i+=1
+            #         i+=1
 
-                    keyword1 = keyword
-                    page1 = page
+                keyword1 = keyword
+                page1 = page
 
-                    driver.quit()
+                driver.quit()
+
+            return {
+            "message": "Search Product success"
+            }, 201
 
     return {
                 "message": "Search Product success"
