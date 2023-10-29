@@ -82,7 +82,7 @@
             <tr>
               <td>
                 <img
-                  src="{% if item.image == 'n' %} {{ url_for('static', filename='/images/default.png') }} {% else %} {{ item.image }} {% endif %}"
+                  src="{% if item.image == 'n' %} {{ url_for('static', filename='/img/default.png') }} {% else %} {{ item.image }} {% endif %}"
                   alt="{{ item.image }}"
                   width="100"
                 />
@@ -98,7 +98,7 @@
               <td>
                 <a href="{{ item.link }}">
                   <img
-                    src="{% if item.source == 'BUKALAPAK' %} {{ url_for('static', filename='/images/bukalapak.png') }} {% elif item.source == 'SHOPEE' %} {{ url_for('static', filename='/images/shopee.png') }} {% elif item.source == 'TOKOPEDIA' %} {{ url_for('static', filename='/images/tokopedia.png') }} {% elif item.source == 'LAZADA' %} {{ url_for('static', filename='/images/lazada.png') }} {% elif item.image == 'n' %} {{ url_for('static', filename='/images/default.png') }} {% else %} {{ url_for('static', filename='/images/default.png') }} {% endif %}"
+                    src="{% if item.source == 'BUKALAPAK' %} {{ url_for('static', filename='/img/bukalapak.png') }} {% elif item.source == 'SHOPEE' %} {{ url_for('static', filename='/img/shopee.png') }} {% elif item.source == 'TOKOPEDIA' %} {{ url_for('static', filename='/img/tokopedia.png') }} {% elif item.source == 'LAZADA' %} {{ url_for('static', filename='/img/lazada.png') }} {% elif item.image == 'n' %} {{ url_for('static', filename='/img/default.png') }} {% else %} {{ url_for('static', filename='/img/default.png') }} {% endif %}"
                     alt="{{ item.source }}"
                     width="100"
                   />
