@@ -58,12 +58,41 @@
     </section>
 
     <!-- Hero Section end -->
-
+    
     <!-- Tabel Section Start -->
 
     <section id="tabel" class="tabel">
 
       <h2><span>Hasil</span> Pencarian<span>mu</span></h2>
+
+      <!-- Filter -->
+
+      <div class="filter">
+        <label class="filterPrice" for="filterPrice">Urutkan Harga dari:</label>
+          <select name="filterPrice" id="filterPrice" required>
+            <option value="" disabled selected>Pilih Urutan</option>
+            <option value="highest">Tertinggi</option>
+            <option value="lowest">Terendah</option>
+            <option value="">Tidak Memilih</option>
+          </select>
+
+        <label class="filterSold" for="filterSold">Urutkan Terjual dari:</label>
+          <select name="filterSold" id="filterSold" required>
+            <option value="" disabled selected>Pilih Urutan</option>
+            <option value="highest">Tertinggi</option>
+            <option value="lowest">Terendah</option>
+            <option value="">Tidak Memilih</option>
+          </select>
+
+        <label class="rangePrice" for="rangePrice">Batas Harga:</label>
+        <input class="minPrice" type="text" id="minPrice" name="minPrice" placeholder="Harga Minimum" oninput="formatPriceInput(this)" />
+        
+        <label class="dash" for="dash"></label>
+        
+        <input class="maxPrice" type="text" id="maxPrice" name="maxPrice" placeholder="Harga Maksimum" oninput="formatPriceInput(this)" />  
+        
+      <button class="filter-button" onclick="submitFilter()">Terapkan</button>
+      </div>
 
       <div class="table-container">
         <table class="table" id="productTable">
@@ -139,13 +168,13 @@
     <!-- Footer start -->
     <footer id="footer">
       <div class="socials">
-        <a href="wa.me/085282839267"
+        <a href="https://wa.me/085282839267"
           ><i data-feather="phone"></i> +62 852 8283 9267</a
         >
         <a href="https://www.instagram.com/akbar.maullanaa"
           ><i data-feather="instagram"></i> @akbar.maullanaa</a
         >
-        <a href="#"><i data-feather="mail"></i> yusufakbarmaulana@gmail.com</a>
+        <a href="mailto:yusufakbarmaulana@gmail.com"><i data-feather="mail"></i> yusufakbarmaulana@gmail.com</a>
       </div>
 
       <div class="links">

@@ -179,6 +179,45 @@ body {
   cursor: pointer;
 }
 
+/* Filter */
+
+.filter label {
+  margin-bottom: 50px;
+}
+
+.filter select {
+  margin-bottom: 50px;
+  margin-left: 5px;
+}
+
+.filter .filterSold,
+.filter .rangePrice {
+  margin-left: 50px;
+}
+
+.filter .dash {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.dash::after {
+  content: "—"; /* Use an em dash or another character for a longer dash */
+  display: inline-block;
+}
+
+.filter .filter-button {
+  padding: 0.2rem 0.6rem; /* Menambahkan lebar dan tinggi tombol */
+  font-size: 0.8rem;
+  color: #fff;
+  background-color: var(--primary);
+  border: none;
+  border-radius: 3px;
+  margin-left: 50px; /* Mengatur jarak antara input dan tombol */
+  cursor: pointer;
+}
+
+/* Filter */
+
 /* Tabel */
 
 .tabel {

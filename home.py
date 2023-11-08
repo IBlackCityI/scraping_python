@@ -52,20 +52,39 @@ def search_product():
             else: 
                 sold = "RANDOM()"
 
-        if "sort_by" in request.args and "sold_by" in request.args:
+        if "min_price" in request.args and "max_price" in request.args:
+            minPrice = request.args["min_price"]
+            maxPrice = request.args["max_price"]
 
-            data = run_query(f"SELECT * FROM product ORDER BY {sort},{sold};")
+            filterPrice = f"WHERE price >= {minPrice} AND price <= {maxPrice}"
+
+        elif "min_price" in request.args and "max_price" not in request.args:
+            minPrice = request.args["min_price"]
+
+            filterPrice = f"WHERE price >= {minPrice}"
+
+        elif "min_price" not in request.args and "max_price" in request.args:
+            maxPrice = request.args["max_price"]
+
+            filterPrice = f"WHERE price <= {maxPrice}"
+
+        else:
+            filterPrice = ""
+
+        if "sort_by" in request.args and "sold_by" in request.args and "min_price" in request.args and "max_price" in request.args:
+
+            data = run_query(f"SELECT * FROM product {filterPrice} ORDER BY {sort},{sold};")
 
         elif "sort_by" in request.args and "sold_by" not in request.args:
 
-            data = run_query(f"SELECT * FROM product ORDER BY {sort};")
+            data = run_query(f"SELECT * FROM product {filterPrice} ORDER BY {sort};")
 
         elif "sort_by" not in request.args and "sold_by" in request.args:
 
-            data = run_query(f"SELECT * FROM product ORDER BY {sold};")
+            data = run_query(f"SELECT * FROM product {filterPrice} ORDER BY {sold};")
         else:
 
-            data = run_query(f"SELECT * FROM product ORDER BY RANDOM();")
+            data = run_query(f"SELECT * FROM product {filterPrice} ORDER BY RANDOM();")
 
         message = "Get Product Success"
         
@@ -117,6 +136,7 @@ def search_product():
                 run_query("DELETE FROM product;", commit=True)
 
             # SCRAPING
+
                 opsi = webdriver.ChromeOptions()
                 opsi.add_experimental_option('excludeSwitches', ['enable-logging'])
                 opsi.add_argument(r"--user-data-dir=C:\Users\Asus\AppData\Local\Google\Chrome\User Data") #e.g. C:\Users\You\AppData\Local\Google\Chrome\User Data
@@ -124,17 +144,21 @@ def search_product():
 
                 # opsi.add_argument('--headless')
                 # opsi.add_argument('--incognito')
+                opsi.add_argument("--disable-blink-features=AutomationControlled")
+                opsi.add_experimental_option("useAutomationExtension", False) 
 
                 opsi.add_argument("disable-infobars")
                 opsi.add_argument("--disable-extensions")
                 opsi.add_argument('--no-sandbox')
                 opsi.add_argument('--disable-dev-shm-usage')
                 opsi.add_argument('--disable-gpu')
-                opsi.add_argument('--start-maximized')
+                # opsi.add_argument('--start-maximized')
                 opsi.add_experimental_option("detach", True)
 
                 servis = Service('chromedriver.exe')
                 driver = webdriver.Chrome(service=servis, options=opsi)
+
+                driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
                 url_shopee = f"https://shopee.co.id/search?keyword={keyword}&page={page-1}"
                 url_tokped = f"https://www.tokopedia.com/search?q={keyword}&page={page}"
