@@ -183,31 +183,37 @@ def search_product():
                 content = driver.page_source
                 data = BeautifulSoup(content,'html.parser')
 
-                for area in data.find_all('li',class_="col-xs-2-4 shopee-search-item-result__item"):
+                for area in data.find_all('div',class_="col-xs-2-4 shopee-search-item-result__item"):
 
-                    productName = area.find('div',class_="ie3A+n bM+7UW Cve6sh").get_text()
-                    if "'" in productName:
-                        productName = productName.replace("'","")
+                    productNameTag = area.find('div', class_="GD02sl _3AO1tA IXhE9E")
+                    if productNameTag:
+                        productName = productNameTag.get_text(strip=True)
+                        if "'" in productName:
+                            productName = productName.replace("'", "")
 
-                    img_tag = area.find('img', class_='_7DTxhh tWoeMk')
+                    img_tag = area.find('img', class_='nTGAS- wOiuiE')
                     if img_tag:
                         productImage = img_tag.get('src')
                     else:
                         productImage = "n"
 
-                    productPrice = area.find('span',class_="ZEgDH9").get_text()
-                    if productPrice == "???":
-                        price = 0
-                    else:
-                        split_price = productPrice.split('.')
-                        conv_price = ""
-                        for p in split_price:
-                            conv_price+=p
-                        price = int(conv_price)
+                    productPriceTag = area.find('span',class_="sHnxNa")
+                    if productPriceTag:
+                        productPrice = productPriceTag.get_text()
+                        if productPrice == "???":
+                            price = 0
+                        else:
+                            split_price = productPrice.split('.')
+                            conv_price = ""
+                            for p in split_price:
+                                conv_price+=p
+                            price = int(conv_price)
 
-                    productLink = base_shopee + area.find('a')['href']
-                    
-                    productSold = area.find('div',class_="r6HknA uEPGHT")
+                    productLinkTag = data.find('a', {'data-sqe': 'link'})
+                    if productLinkTag:
+                        productLink = productLinkTag.get('href')
+                                    
+                    productSold = area.find('div',class_="sdJLPr MbhsP1")
                     if productSold != None:
                         productSold = productSold.get_text()
                         if "+" in productSold:
@@ -221,7 +227,9 @@ def search_product():
                     else:
                         sold = 0
 
-                    productLocation = area.find('div',class_="zGGwiV").get_text()
+                    productLocationTag = area.find('div',class_="MML2bA")
+                    if productLocationTag:
+                        productLocation = productLocationTag.get_text(strip=True)
                     
                     run_query(f"INSERT INTO product VALUES({i},'SHOPEE','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}')", commit=True)
                     # print(productPrice)

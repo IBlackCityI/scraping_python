@@ -18,7 +18,63 @@ document.addEventListener("click", function (e) {
   }
 });
 
+function showLoadingSpinner(cancelCallback) {
+  const loadingSpinner = document.getElementById("loading-spinner");
+  const overlay = document.createElement("div");
+  overlay.id = "loading-overlay";
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+  overlay.style.zIndex = "9999";
+  overlay.style.display = "flex";
+  overlay.style.flexDirection = "column";
+  overlay.style.justifyContent = "center";
+  overlay.style.alignItems = "center";
+
+  const textElement = document.createElement("div");
+  textElement.style.color = "#fff";
+  textElement.style.fontWeight = "bold";
+  textElement.textContent =
+    "Mohon Tunggu Selama 1 - 3 Menit Hingga Proses Selesai";
+  textElement.style.marginTop = "250px";
+  overlay.appendChild(textElement);
+
+  const cancelButton = document.createElement("button");
+  cancelButton.textContent = "Cancel";
+  cancelButton.style.marginTop = "20px"; // Menambahkan margin ke atas
+  cancelButton.style.padding = "5px";
+  cancelButton.style.cursor = "pointer";
+  cancelButton.addEventListener("click", () => {
+    // Panggil callback batal jika ada
+    if (typeof cancelCallback === "function") {
+      cancelCallback();
+    }
+    // Sembunyikan loading spinner
+    hideLoadingSpinner();
+  });
+  overlay.appendChild(cancelButton);
+
+  document.body.appendChild(overlay);
+
+  loadingSpinner.style.display = "block";
+}
+
+function hideLoadingSpinner() {
+  const loadingSpinner = document.getElementById("loading-spinner");
+  const overlay = document.getElementById("loading-overlay");
+  if (overlay) {
+    document.body.removeChild(overlay);
+  }
+
+  loadingSpinner.style.display = "none";
+}
+
 function submitForm() {
+  showLoadingSpinner();
+
   const keyword = document.getElementById("search-bar").value.trim();
   const page = document.getElementById("page").value;
 
@@ -55,18 +111,32 @@ function submitForm() {
 
   const url = `/home?${params.join("&")}`;
 
-  // Redirect to the new URL
-  window.location.href = url;
-
   fetch(url, {
     method: "POST",
   })
-    .then((response) => response.text())
-    .then((result) => {
-      alert(result); // Tampilkan hasil dari server
+    .then((response) => response.json())
+    .then((data) => {
+      alert(data.message);
+      if (data.message === "Search Product success") {
+        hideLoadingSpinner();
+
+        // Refresh Page
+        window.location.reload();
+      } else {
+        // Lakukan sesuatu jika pencarian tidak berhasil
+        console.log("Search Product failed");
+        hideLoadingSpinner();
+
+        // Refresh Page
+        window.location.reload();
+      }
     })
     .catch((error) => {
       console.error("Error:", error);
+      hideLoadingSpinner();
+
+      // Refresh Page
+      window.location.reload();
     });
 }
 
