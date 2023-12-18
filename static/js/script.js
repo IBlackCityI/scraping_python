@@ -80,6 +80,7 @@ function submitForm() {
       .then((response) => response.json())
       .then((data) => {
         alert(data.message);
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Error", error);

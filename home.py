@@ -192,6 +192,7 @@ def search_product():
                         keyword = None
                         page = None
                         run_query("DELETE FROM product;", commit=True)
+                        cancel_scraping = False
                     
                     else:
 
@@ -265,6 +266,7 @@ def search_product():
                         keyword = None
                         page = None
                         run_query("DELETE FROM product;", commit=True)
+                        cancel_scraping = False
                     
                     else:
                     
@@ -328,6 +330,7 @@ def search_product():
                         keyword = None
                         page = None
                         run_query("DELETE FROM product;", commit=True)
+                        cancel_scraping = False
                     
                     else:
 
@@ -393,6 +396,7 @@ def search_product():
                         keyword = None
                         page = None
                         run_query("DELETE FROM product;", commit=True)
+                        cancel_scraping = False
                     
                     else:
 
@@ -433,6 +437,7 @@ def search_product():
                     keyword = None
                     page = None
                     run_query("DELETE FROM product;", commit=True)
+                    cancel_scraping = False
                 
                 else:
                     
@@ -447,6 +452,10 @@ def search_product():
 
 @home_bp.route("/cancel_scraping", methods=["POST"])
 def cancel_scraping_endpoint():
+
     global cancel_scraping
     cancel_scraping = True
-    return {"message": "Scraping canceled successfully"}, 200
+
+    run_query("DELETE FROM product;", commit=True)
+
+    return {"message": "Search Product cancelled"}, 200
