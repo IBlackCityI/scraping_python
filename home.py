@@ -129,9 +129,12 @@ def search_product():
                 
 
             if keyword == keyword1 and page == page1:
+                print(data)
+
                 return {
                         "message": "Search Product success"
                     }, 201
+            
 
             else:
 
@@ -185,7 +188,7 @@ def search_product():
                 content = driver.page_source
                 data = BeautifulSoup(content,'html.parser')
 
-                for area in data.find_all('div',class_="col-xs-2-4 shopee-search-item-result__item"):
+                for area in data.find_all('li',class_="col-xs-2-4 shopee-search-item-result__item"):
 
                     if cancel_scraping:
                         driver.quit()
@@ -196,19 +199,19 @@ def search_product():
                     
                     else:
 
-                        productNameTag = area.find('div', class_="GD02sl _3AO1tA IXhE9E")
+                        productNameTag = area.find('div', class_="Pb-nBz AUiPiB kieGYp")
                         if productNameTag:
                             productName = productNameTag.get_text(strip=True)
                             if "'" in productName:
                                 productName = productName.replace("'", "")
 
-                        img_tag = area.find('img', class_='nTGAS- wOiuiE')
+                        img_tag = area.find('img', class_='MX65be wOiuiE')
                         if img_tag:
                             productImage = img_tag.get('src')
                         else:
                             productImage = "n"
 
-                        productPriceTag = area.find('span',class_="sHnxNa")
+                        productPriceTag = area.find('span',class_="wT9Rlu")
                         if productPriceTag:
                             productPrice = productPriceTag.get_text()
                             if productPrice == "???":
@@ -222,9 +225,10 @@ def search_product():
 
                         productLinkTag = data.find('a', {'data-sqe': 'link'})
                         if productLinkTag:
-                            productLink = productLinkTag.get('href')
+                            productLink1 = productLinkTag.get('href')
+                            productLink = base_shopee+productLink1
                                         
-                        productSold = area.find('div',class_="sdJLPr MbhsP1")
+                        productSold = area.find('div',class_="hlb67y DF4gT4")
                         if productSold != None:
                             productSold = productSold.get_text()
                             if "+" in productSold:
@@ -232,18 +236,20 @@ def search_product():
                             if "RB" in productSold:
                                 split_sold = productSold.replace("RB Terjual","")
                                 sold = int(split_sold.replace(",","")) * 100
+                            elif productSold == '':
+                                sold = 0
                             else:
                                 split_sold = productSold.replace(" Terjual","")
                                 sold = int(split_sold)
                         else:
                             sold = 0
 
-                        productLocationTag = area.find('div',class_="MML2bA")
+                        productLocationTag = area.find('div',class_="D45qEQ")
                         if productLocationTag:
                             productLocation = productLocationTag.get_text(strip=True)
                         
                         run_query(f"INSERT INTO product VALUES({i},'SHOPEE','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}')", commit=True)
-                        # print(productPrice)
+
                         i+=1
 
             # TOKOPEDIA
@@ -304,8 +310,10 @@ def search_product():
                             else:
                                 sold = 0
 
-                            productLocation = area.find('span',class_="prd_link-shop-loc css-1kdc32b flip").get_text()
-                            
+                            productLocationTag = area.find('span',class_="prd_link-shop-loc css-1kdc32b flip")
+                            if productLocationTag:
+                                productLocation = productLocationTag.get_text()
+                                
                             run_query(f"INSERT INTO product VALUES({i},'TOKOPEDIA','{productImage}','{productName}',{price},{sold},'{productLocation}','{productLink}')", commit=True)
 
                             i+=1
