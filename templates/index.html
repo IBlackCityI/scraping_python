@@ -49,36 +49,138 @@
     <section class="hero" id="home">
       <main class="content">
         <h1>Mari Berbelanja <span>Dimanapun Kapanpun</span></h1>
+        <br>
         <div class="search-bar">
           <input type="search" id="search-bar" placeholder="Cari produk..." />
           <button class="search-button" onclick="submitForm()">Cari</button>
-        </div>
-        <div>
-          <input
-            type="number"
-            id="page"
-            name="page"
-            min="1"
-            max="100"
-            step="1"
-            value="1"
-          />
         </div>
       </main>
     </section>
 
     <!-- Hero Section end -->
 
+    <!-- Loading Circle Popup -->
+    <div id="loading-spinner" class="spinner-container">
+      <div class="spinner"></div>
+    </div>
+    <!-- Loading Circle Popup -->
+    
+    <!-- Tabel Section Start -->
+
+    <section id="tabel" class="tabel">
+
+      <h2><span>Hasil</span> Pencarian<span>mu</span></h2>
+
+      <!-- Filter -->
+
+      <div class="filter">
+        <label class="filterPrice" for="filterPrice">Urutkan Harga dari:</label>
+          <select name="filterPrice" id="filterPrice" required>
+            <option value="" disabled selected>Pilih Urutan</option>
+            <option value="highest">Tertinggi</option>
+            <option value="lowest">Terendah</option>
+            <option value="">Tidak Memilih</option>
+          </select>
+
+        <label class="filterSold" for="filterSold">Urutkan Terjual dari:</label>
+          <select name="filterSold" id="filterSold" required>
+            <option value="" disabled selected>Pilih Urutan</option>
+            <option value="highest">Tertinggi</option>
+            <option value="lowest">Terendah</option>
+            <option value="">Tidak Memilih</option>
+          </select>
+
+        <label class="rangePrice" for="rangePrice">Batas Harga:</label>
+        <input class="minPrice" type="text" id="minPrice" name="minPrice" placeholder="Harga Minimum" oninput="formatPriceInput(this)" />
+        
+        <label class="dash" for="dash"></label>
+        
+        <input class="maxPrice" type="text" id="maxPrice" name="maxPrice" placeholder="Harga Maksimum" oninput="formatPriceInput(this)" />  
+        
+        <button class="filter-button" onclick="submitFilter()">Terapkan</button>
+      </div>
+
+      <div class="table-container">
+        <table class="table" id="productTable">
+          <thead>
+            <tr>
+              <th>Gambar</th>
+              <th>Judul</th>
+              <th>Harga</th>
+              <th>Terjual</th>
+              <th>Lokasi</th>
+              <th>Link</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            {% if data %} {% for item in data %}
+            <tr>
+              <td>
+                <img
+                  src="{% if item.image == 'n' %} {{ url_for('static', filename='/img/default.png') }} {% else %} {{ item.image }} {% endif %}"
+                  alt="{{ item.image }}"
+                  width="100"
+                />
+              </td>
+              <td>{{ item.title }}</td>
+              <td>
+                <span class="price" data-raw-price="{{ item.price }}"
+                  >{{ item.price}}</span
+                >
+              </td>
+              <td>{{ item.sold }}</td>
+              <td>{{ item.location }}</td>
+              <td>
+                <a href="{{ item.link }}">
+                  <img
+                    src="{% if item.source == 'BUKALAPAK' %} {{ url_for('static', filename='/img/bukalapak.png') }} {% elif item.source == 'SHOPEE' %} {{ url_for('static', filename='/img/shopee.png') }} {% elif item.source == 'TOKOPEDIA' %} {{ url_for('static', filename='/img/tokopedia.png') }} {% elif item.source == 'LAZADA' %} {{ url_for('static', filename='/img/lazada.png') }} {% elif item.image == 'n' %} {{ url_for('static', filename='/img/default.png') }} {% else %} {{ url_for('static', filename='/img/default.png') }} {% endif %}"
+                    alt="{{ item.source }}"
+                    width="100"
+                  />
+                </a>
+              </td>
+            </tr>
+            {% endfor %} {% else %}
+            <tr>
+              <td colspan="6">Belum ada Data, silahkan lakukan pencarian</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+        <div>
+
+    </section>
+
+    <!-- Tabel Section End -->
+
+    <!-- Pagination Section Start -->
+    
+    <section id="pagination" class="pagination">
+            <input
+              type="number"
+              id="page"
+              name="page"
+              min="1"
+              max="17"
+              step="1"
+              value="1"
+            />
+            
+          <button class="search-button" onclick="submitForm()">Cari</button>
+    </section>
+    
+    <!-- Pagination Section Start -->
+
     <!-- Footer start -->
     <footer id="footer">
       <div class="socials">
-        <a href="wa.me/085282839267"
+        <a href="https://wa.me/085282839267"
           ><i data-feather="phone"></i> +62 852 8283 9267</a
         >
         <a href="https://www.instagram.com/akbar.maullanaa"
           ><i data-feather="instagram"></i> @akbar.maullanaa</a
         >
-        <a href="#"><i data-feather="mail"></i> yusufakbarmaulana@gmail.com</a>
+        <a href="mailto:yusufakbarmaulana@gmail.com"><i data-feather="mail"></i> yusufakbarmaulana@gmail.com</a>
       </div>
 
       <div class="links">
@@ -94,12 +196,10 @@
     </footer>
     <!-- Footer end -->
 
-    <!-- Feather Icons -->
+    <!-- My Javascript -->
+    <script src="{{ url_for('static',filename='/js/script.js') }}"></script>
     <script>
       feather.replace();
     </script>
-
-    <!-- My Javascript -->
-    <script src="{{ url_for('static',filename='/js/script.js') }}"></script>
   </body>
 </html>
